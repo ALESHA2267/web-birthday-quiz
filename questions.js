@@ -421,7 +421,7 @@ const QUIZ_DATA = [
 const DIFFICULTY_CONFIG = {
   easy: {
     label: "Лёгкий",
-    color: "#00ffa3",
+    color: "var(--neon-green)",
     bgAlpha: "rgba(0, 255, 163, 0.12)",
     borderAlpha: "rgba(0, 255, 163, 0.4)",
     badgeIcon: "🟢",
@@ -429,7 +429,7 @@ const DIFFICULTY_CONFIG = {
   },
   medium: {
     label: "Средний",
-    color: "#ffd000",
+    color: "var(--neon-yellow)",
     bgAlpha: "rgba(255, 208, 0, 0.12)",
     borderAlpha: "rgba(255, 208, 0, 0.4)",
     badgeIcon: "🟡",
@@ -437,7 +437,7 @@ const DIFFICULTY_CONFIG = {
   },
   hard: {
     label: "Сложный",
-    color: "#ff8400",
+    color: "var(--neon-orange)",
     bgAlpha: "rgba(255, 132, 0, 0.12)",
     borderAlpha: "rgba(255, 132, 0, 0.4)",
     badgeIcon: "🟠",
@@ -445,7 +445,7 @@ const DIFFICULTY_CONFIG = {
   },
   very_hard: {
     label: "Очень сложный",
-    color: "#ff2a6d",
+    color: "var(--neon-red)",
     bgAlpha: "rgba(255, 42, 109, 0.12)",
     borderAlpha: "rgba(255, 42, 109, 0.4)",
     badgeIcon: "🔴",
@@ -453,7 +453,7 @@ const DIFFICULTY_CONFIG = {
   },
   expert: {
     label: "Экспертный",
-    color: "#b026ff",
+    color: "var(--neon-purple)",
     bgAlpha: "rgba(176, 38, 255, 0.15)",
     borderAlpha: "rgba(176, 38, 255, 0.45)",
     badgeIcon: "🟣",
@@ -468,7 +468,7 @@ const RANKS = [
     max: 20,
     title: "Новичок сети",
     icon: "🌱",
-    color: "#00ffa3",
+    color: "var(--neon-green)",
     desc: "Хороший старт, но впереди ещё весь веб! Продолжай изучать технологии — мир Интернета полон удивительных открытий."
   },
   {
@@ -476,7 +476,7 @@ const RANKS = [
     max: 40,
     title: "Продвинутый пользователь",
     icon: "💻",
-    color: "#00f0ff",
+    color: "var(--neon-cyan)",
     desc: "Уверенно сёрфишь просторы Интернета! Ты отлично ориентируешься в сетевых концепциях и базовых правилах безопасности."
   },
   {
@@ -484,7 +484,7 @@ const RANKS = [
     max: 60,
     title: "Гуру Интернета",
     icon: "🧠",
-    color: "#ffd000",
+    color: "var(--neon-yellow)",
     desc: "Отличные глубокие знания истории и технологий! Твоей сетевой эрудиции позавидует большинство системных администраторов."
   },
   {
@@ -492,7 +492,7 @@ const RANKS = [
     max: 75,
     title: "Легенда Всемирной паутины",
     icon: "🏆",
-    color: "#b026ff",
+    color: "var(--neon-purple)",
     desc: "Экспертный уровень! Тим Бернерс-Ли, Винтон Серф и Рэй Томлинсон гордятся тобой! Ты настоящий архитектор цифровой эпохи!"
   }
 ];

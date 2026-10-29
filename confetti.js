@@ -49,7 +49,11 @@ class ConfettiEngine {
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       size,
-      color: this.colors[Math.floor(Math.random() * this.colors.length)],
+      color: (() => {
+        const picked = this.colors[Math.floor(Math.random() * this.colors.length)];
+        // На светлой теме белое конфетти не видно — заменяем на тёмно-синее
+        return picked === "#ffffff" && document.body.classList.contains("light-theme") ? "#1b2a5c" : picked;
+      })(),
       rotation: Math.random() * 360,
       rotationSpeed: (Math.random() - 0.5) * 12,
       tilt: Math.random() * 10,

@@ -83,7 +83,8 @@ class QuizApp {
       preloader: document.getElementById("page-preloader"),
       preloaderProgressBar: document.getElementById("preloader-progress-bar"),
       preloaderTimer: document.getElementById("preloader-timer"),
-      btnSkipPreloader: document.getElementById("btn-skip-preloader")
+      btnSkipPreloader: document.getElementById("btn-skip-preloader"),
+      btnThemeToggle: document.getElementById("btn-theme-toggle")
     };
 
     this.currentQuestionData = null;
@@ -110,7 +111,8 @@ class QuizApp {
       answered: {}, // { "c0_q0": { answered: true, isCorrect: true, selectedIdx: 0, points: 1, shuffled: [0,2,1,3] } }
       startTime: Date.now(),
       endTime: null,
-      introSeen: false
+      introSeen: false,
+      theme: "dark"
     };
   }
 
@@ -130,7 +132,8 @@ class QuizApp {
       answered: {},
       startTime: Date.now(),
       endTime: null,
-      introSeen: true
+      introSeen: true,
+      theme: this.state.theme || "dark"
     };
     this.saveState();
     this.updateHeaderUI();
@@ -148,6 +151,7 @@ class QuizApp {
     this.renderMobileTabs();
     this.updateHeaderUI();
     this.updateSoundToggleUI();
+    this.initTheme();
 
     // Привязка обработчиков событий
     this.bindEvents();
@@ -174,6 +178,40 @@ class QuizApp {
 
     // Инициализация прелоадера (20 секунд)
     this.initPreloader();
+  }
+
+  // Применение темы (без анимации — при загрузке)
+  initTheme() {
+    this.applyTheme(this.state.theme === "light" ? "light" : "dark");
+  }
+
+  applyTheme(theme) {
+    const isLight = theme === "light";
+    document.body.classList.toggle("light-theme", isLight);
+
+    const btn = this.dom.btnThemeToggle;
+    btn.querySelector(".theme-icon").textContent = isLight ? "☀️" : "🌙";
+    btn.setAttribute("aria-pressed", String(isLight));
+    btn.setAttribute("aria-label", isLight ? "Включить тёмную тему" : "Включить светлую тему");
+    btn.title = isLight ? "Переключить на тёмную тему" : "Переключить на светлую тему";
+
+    // Цвет системной панели браузера на мобильных
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", isLight ? "#e8edf8" : "#080b12");
+  }
+
+  // Переключение темы
+  toggleTheme() {
+    this.state.theme = this.state.theme === "light" ? "dark" : "light";
+    this.saveState();
+
+    // Плавный переход цветов (класс снимается через 400 мс)
+    document.body.classList.add("theme-switching");
+    this.applyTheme(this.state.theme);
+    clearTimeout(this._themeTimer);
+    this._themeTimer = setTimeout(() => {
+      document.body.classList.remove("theme-switching");
+    }, 400);
   }
 
   // ========================================================================
@@ -247,6 +285,12 @@ class QuizApp {
         this.updateSoundToggleUI();
         this.showToast(shouldBeMuted ? "Звук выключен 🔇" : "Звук включен 🔊", shouldBeMuted ? "🔇" : "🔊");
       });
+    });
+
+    // Переключатель темы
+    this.dom.btnThemeToggle.addEventListener("click", () => {
+      window.sound.playClick();
+      this.toggleTheme();
     });
 
     // Инфо / Правила
@@ -837,7 +881,7 @@ class QuizApp {
           <span class="cat-bar-pts">${score} / ${maxCatScore} б.</span>
         </div>
         <div class="cat-bar-track">
-          <div class="cat-bar-fill" style="width: ${catPercent}%; background: linear-gradient(90deg, ${cat.accentColor}, #00ffa3);"></div>
+          <div class="cat-bar-fill" style="width: ${catPercent}%; background: linear-gradient(90deg, ${cat.accentColor}, var(--neon-green));"></div>
         </div>
       `;
       this.dom.catBreakdownList.appendChild(item);
@@ -979,7 +1023,7 @@ ${rank.icon} Звание: «${rank.title}»
         vx: (Math.random() - 0.5) * 0.45,
         vy: (Math.random() - 0.5) * 0.45,
         radius: Math.random() * 2 + 1,
-        color: Math.random() > 0.5 ? "rgba(0, 240, 255," : "rgba(176, 38, 255,"
+        color: Math.random() > 0.5 ? 0 : 1
       });
     }
 
@@ -990,6 +1034,7 @@ ${rank.icon} Звание: «${rank.title}»
 
     const render = () => {
       if (isVisible) {
+        const isLight = document.body.classList.contains("light-theme");
         ctx.clearRect(0, 0, width, height);
 
         // Соединительные линии
@@ -1002,7 +1047,7 @@ ${rank.icon} Звание: «${rank.title}»
 
             if (dist < maxDist) {
               const alpha = (1 - dist / maxDist) * 0.12;
-              ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+              ctx.strokeStyle = isLight ? `rgba(0, 110, 140, ${alpha * 1.6})` : `rgba(0, 240, 255, ${alpha})`;
               ctx.lineWidth = 0.8;
               ctx.beginPath();
               ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -1021,7 +1066,9 @@ ${rank.icon} Звание: «${rank.title}»
           if (n.x < 0 || n.x > width) n.vx *= -1;
           if (n.y < 0 || n.y > height) n.vy *= -1;
 
-          ctx.fillStyle = `${n.color} 0.5)`;
+          ctx.fillStyle = isLight
+            ? (n.color === 0 ? "rgba(0, 110, 140, 0.45)" : "rgba(138, 31, 209, 0.4)")
+            : (n.color === 0 ? "rgba(0, 240, 255, 0.5)" : "rgba(176, 38, 255, 0.5)");
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
           ctx.fill();
